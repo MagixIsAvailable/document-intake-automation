@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Intake Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+
+<div class="app-layout">
+
+  <!-- ── Sidebar / Workflow Timeline ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">DIA</div>
+    <div class="sidebar-subtitle">Document Intake<br>Automation</div>
+
+    <div class="timeline-label">Workflow</div>
+    <div class="timeline">
+      <div class="timeline-step done" data-step="extract">
+        <span class="timeline-step-icon">&#10003;</span>Extract
+      </div>
+      <div class="timeline-step" data-step="assess">
+        <span class="timeline-step-icon">&#9679;</span>Assess Risk
+      </div>
+      <div class="timeline-step" data-step="validate">
+        <span class="timeline-step-icon">&#9679;</span>Validate
+      </div>
+      <div class="timeline-step" data-step="route">
+        <span class="timeline-step-icon">&#9679;</span>Route
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <main class="main">
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Intelligent Document Processing</h1>
+      <p class="subhead">
+        Two-stage AI pipeline: extraction and risk assessment — all on local hardware
+      </p>
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-value">2</div>
+          <div class="stat-label">AI Agents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Never</div>
+          <div class="stat-label">Data Leaves Machine</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">~15s</div>
+          <div class="stat-label">Processing Time</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Submission Form -->
+    <div class="card form-section">
+      <div style="font-size:16px;font-weight:700;margin-bottom:20px;letter-spacing:-0.3px;">
+        Document Intake Automation
+      </div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:24px;">
+        AI-Powered Document Processing and Risk Assessment
+      </div>
+
+      <form id="intakeForm" autocomplete="off">
+        <div class="form-group">
+          <label class="form-label" for="documentText">Document Text</label>
+          <textarea
+            id="documentText"
+            name="document_text"
+            placeholder="Paste document content here e.g. Invoice from Acme Ltd dated 15/07/2026 for £4,500 for consulting services rendered in June 2026."
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="clientName">Client Name (optional override)</label>
+          <input
+            type="text"
+            id="clientName"
+            name="client_name"
+            placeholder="e.g. Acme Ltd"
+          />
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          <span class="btn-text">Process Document</span>
+          <span class="spinner"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Connection Error -->
+    <div class="error-message" id="errorMsg">
+      <span class="err-icon">&#9888;</span>
+      <span>Could not connect to the automation workflow. Please ensure n8n is running.</span>
+    </div>
+
+    <!-- Results Panel -->
+    <div class="results-panel" id="resultsPanel">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:20px;color:var(--accent);letter-spacing:-0.3px;">
+          &#9776; Processing Results
+        </div>
+        <div class="results-grid" id="resultsGrid">
+          <!-- Dynamically filled -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-line">
+        Built with n8n + LM Studio + Gemma 4 12B — running entirely on local hardware
+      </p>
+      <p class="footer-sub">
+        No document content is transmitted to external services
+      </p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
