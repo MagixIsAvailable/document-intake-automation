@@ -193,7 +193,7 @@
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-      const response = await fetch('http://localhost:5678/webhook/document-intake', {
+      const response = await fetch('http://localhost:5678/webhook-test/document-intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
