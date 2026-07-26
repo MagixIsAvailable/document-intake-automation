@@ -1,4 +1,4 @@
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   const form = document.getElementById('intakeForm');
@@ -83,19 +83,18 @@
 
   function buildResultsGrid(data) {
     const fields = [
-      { label: 'Client Name',    key: 'client_name',    value: data.client_name    || '—' },
-      { label: 'Document Type',  key: 'document_type',  value: data.document_type  || data.documentType  || '—' },
-      { label: 'Document Date',  key: 'document_date',  value: data.document_date  || data.documentDate  || '—' },
-      { label: 'Amount',         key: 'amount',         value: data.amount         || '—' },
-      { label: 'Summary',        key: 'summary',        value: data.summary        || '—', fullWidth: true },
-      { label: 'Risk Reason',    key: 'risk_reason',    value: data.risk_reason    || data.riskReason    || '—', fullWidth: true },
-      { label: 'Timestamp',      key: 'timestamp',      value: data.timestamp      || '—' },
-      { label: 'Requires Review',key: 'requires_review',value: data.requires_review || data.requiresReview || '—' },
+      { label: 'Client Name',    key: 'client_name',    value: data.client_name    || '\u2014' },
+      { label: 'Document Type',  key: 'document_type',  value: data.document_type  || data.documentType  || '\u2014' },
+      { label: 'Document Date',  key: 'document_date',  value: data.document_date  || data.documentDate  || '\u2014' },
+      { label: 'Amount',         key: 'amount',         value: data.amount         || '\u2014' },
+      { label: 'Summary',        key: 'summary',        value: data.summary        || '\u2014', fullWidth: true },
+      { label: 'Risk Reason',    key: 'risk_reason',    value: data.risk_reason    || data.riskReason    || '\u2014', fullWidth: true },
+      { label: 'Timestamp',      key: 'timestamp',      value: data.timestamp      || '\u2014' },
+      { label: 'Requires Review',key: 'requires_review',value: data.requires_review || data.requiresReview || '\u2014' },
     ];
 
     let html = '';
 
-    // Risk level highlight row
     const riskLevel = data.risk_level || data.riskLevel || 'low';
     const riskIconClass = getRiskIconClass(riskLevel);
     const riskIcon = getRiskIcon(riskLevel);
@@ -110,7 +109,6 @@
     html += '</div>';
     html += '</div>';
 
-    // Validation status
     const valStatus = data.validation_status || data.validationStatus || 'PASS';
     const isPass = valStatus.toUpperCase() === 'PASS';
     html += '<div class="result-item">';
@@ -122,7 +120,6 @@
     html += '</div>';
     html += '</div>';
 
-    // Standard fields
     fields.forEach(f => {
       const style = f.fullWidth ? ' style="grid-column: 1 / -1;"' : '';
       html += '<div class="result-item"' + style + '>';
@@ -131,7 +128,6 @@
       html += '</div>';
     });
 
-    // Error list
     const errors = data.errors || [];
     if (Array.isArray(errors) && errors.length > 0) {
       html += '<div class="errors-section">';
@@ -142,19 +138,11 @@
       html += '</div>';
     }
 
-    // Requires review badge
-    const requiresReview = data.requires_review || data.requiresReview;
-    if (requiresReview !== undefined && requiresReview !== null) {
-      const reviewStr = String(requiresReview).toLowerCase();
-      const isYes = reviewStr === 'yes' || reviewStr === 'true' || reviewStr === '1';
-      // Already rendered in fields, but add visual indicator if needed
-    }
-
     resultsGrid.innerHTML = html;
   }
 
   function escapeHtml(str) {
-    if (str === null || str === undefined) return '—';
+    if (str === null || str === undefined) return '\u2014';
     const s = String(str);
     return s
       .replace(/&/g, '&amp;')
@@ -176,12 +164,9 @@
     setLoading(true);
     resetTimeline();
 
-    // Hide previous results & errors
     resultsPanel.classList.remove('visible');
     errorMsg.style.display = 'none';
 
-    // Step 1: Extract (already done in timeline reset)
-    // Step 2: Assess Risk
     setTimeout(() => advanceTimeline('assess'), 600);
 
     const payload = {
@@ -202,7 +187,6 @@
 
       clearTimeout(timeoutId);
 
-      // Step 3: Validate
       setTimeout(() => advanceTimeline('validate'), 400);
 
       if (!response.ok) {
@@ -211,13 +195,11 @@
 
       const data = await response.json();
 
-      // Step 4: Route
       setTimeout(() => advanceTimeline('route'), 400);
       setTimeout(() => finishAllTimelineSteps(), 800);
 
       buildResultsGrid(data);
 
-      // Show results panel
       requestAnimationFrame(() => {
         resultsPanel.classList.add('visible');
         resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -238,6 +220,5 @@
     }
   });
 
-  // Initialize timeline
   resetTimeline();
-})();
+});
