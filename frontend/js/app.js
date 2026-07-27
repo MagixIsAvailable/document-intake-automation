@@ -519,8 +519,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function csvEscape(val) {
     if (val === null || val === undefined) return '';
-    const s = String(val);
-    if (s.includes(',') || s.includes('"') || s.includes('\n')) return '"' + s.replace(/"/g, '""') + '"';
+    let s = String(val);
+    // Strip CSV formula injection — neutralises =HYPERLINK, @SUM, +cmd, -cmd, DDE
+    if (s.length > 0 && ['=', '+', '-', '@', '\t', '\r'].includes(s[0])) {
+      s = "'" + s;
+    }
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
     return s;
   }
 
