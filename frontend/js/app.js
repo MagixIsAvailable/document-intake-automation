@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       batchProgressText.textContent = 'Processing 0 of ' + rows.length + ' documents...';
       const total = rows.length;
-      const BATCH_SIZE = 2;
+      const BATCH_SIZE = 4;
       const batchStartTime = Date.now();
 
       for (let i = 0; i < total; i += BATCH_SIZE) {
@@ -645,30 +645,18 @@ document.addEventListener('DOMContentLoaded', function () {
       .replace(/'/g, '&#039;');
   }
 
-  // Read file with encoding detection — checks BOM, falls back to Windows-1252 for Excel CSVs
+  // Read file as UTF-8, stripping BOM if present
   function readFileAsText(file) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();
       reader.onload = function () {
-        var arr = new Uint8Array(reader.result);
-        // UTF-8 BOM = EF BB BF
-        var hasUtf8Bom = arr.length >= 3 && arr[0] === 0xEF && arr[1] === 0xBB && arr[2] === 0xBF;
-        if (hasUtf8Bom) {
-          // Definitely UTF-8 — read as UTF-8
-          var utfReader = new FileReader();
-          utfReader.onload = function () { resolve(utfReader.result); };
-          utfReader.onerror = reject;
-          utfReader.readAsText(file, 'UTF-8');
-          return;
-        }
-        // No BOM — likely Windows-1252 from Excel. Read as Windows-1252.
-        var winReader = new FileReader();
-        winReader.onload = function () { resolve(winReader.result); };
-        winReader.onerror = reject;
-        winReader.readAsText(file, 'windows-1252');
+        var text = reader.result;
+        // Strip UTF-8 BOM if present
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+        resolve(text);
       };
       reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
+      reader.readAsText(file, 'UTF-8');
     });
   }
 
