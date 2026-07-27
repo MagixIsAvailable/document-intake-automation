@@ -336,6 +336,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function parseCSV(text) {
+    // Strip BOM if present (defensive, even though readFileAsText handles it)
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
     const lines = text.split(/\r?\n/).filter(function (l) { return l.trim(); });
     if (lines.length < 2) return [];
     const headers = lines[0].split(',').map(function (h) { return h.trim().replace(/^"|"$/g, ''); });
