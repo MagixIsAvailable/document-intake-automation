@@ -16,6 +16,10 @@ An end-to-end automation workflow that ingests client documents via webhook, use
 
 ## 🖼️ Demo
 
+[![Watch the demo video](https://img.youtube.com/vi/9PkEhUepugA/maxresdefault.jpg)](https://youtu.be/9PkEhUepugA)
+
+*Click the thumbnail above to watch the full walkthrough on YouTube.*
+
 ![Single document processing interface](docs/screenshots/single-doc.png)
 *Single document submission — paste text, receive structured extraction with colour-coded risk badge and validation status.*
 
