@@ -99,6 +99,106 @@
       </form>
     </div>
 
+    <!-- ==================== Batch CSV Processing ==================== -->
+    <div class="section-divider">
+      <span>Batch Processing</span>
+    </div>
+
+    <div class="card form-section batch-section">
+      <div class="form-title">CSV Batch Upload</div>
+      <div class="form-subtitle">Upload a CSV with <code>document_id</code>, <code>client_name</code>, and <code>document_text</code> columns</div>
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-zone-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <p class="drop-zone-text">Drag &amp; drop a CSV file here, or <span class="drop-zone-link">click to browse</span></p>
+        <p class="drop-zone-hint">.csv files only</p>
+        <input type="file" id="csvFileInput" accept=".csv" hidden>
+      </div>
+
+      <!-- Selected File Info -->
+      <div class="file-info" id="fileInfo">
+        <span class="file-info-icon">&#128196;</span>
+        <span class="file-info-name" id="fileName"></span>
+        <button type="button" class="file-info-remove" id="fileRemove" title="Remove file">&times;</button>
+      </div>
+
+      <!-- Process Button -->
+      <button type="button" class="btn" id="batchSubmitBtn">
+        <span class="btn-text">Process Batch</span>
+        <span class="spinner"></span>
+      </button>
+
+      <!-- Progress Bar -->
+      <div class="batch-progress" id="batchProgress">
+        <div class="batch-progress-bar">
+          <div class="batch-progress-fill" id="batchProgressFill"></div>
+        </div>
+        <p class="batch-progress-text" id="batchProgressText">Processing 0 of 0 documents...</p>
+      </div>
+    </div>
+
+    <!-- Batch Summary Dashboard -->
+    <div class="batch-summary" id="batchSummary">
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="summary-card-value" id="summaryTotal">0</div>
+          <div class="summary-card-label">Total Processed</div>
+        </div>
+        <div class="summary-card summary-card-pass">
+          <div class="summary-card-value" id="summaryPass">0</div>
+          <div class="summary-card-label">PASS</div>
+        </div>
+        <div class="summary-card summary-card-fail">
+          <div class="summary-card-value" id="summaryFail">0</div>
+          <div class="summary-card-label">FAIL</div>
+        </div>
+        <div class="summary-card summary-card-risk">
+          <div class="summary-card-value" id="summaryLow">0</div>
+          <div class="summary-card-label">Low Risk</div>
+        </div>
+        <div class="summary-card summary-card-risk">
+          <div class="summary-card-value" id="summaryMedium">0</div>
+          <div class="summary-card-label">Med Risk</div>
+        </div>
+        <div class="summary-card summary-card-risk">
+          <div class="summary-card-value" id="summaryHigh">0</div>
+          <div class="summary-card-label">High Risk</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Batch Results Table -->
+    <div class="batch-table-wrapper" id="batchTableWrapper">
+      <div class="batch-table-header">
+        <h3 class="batch-table-title">Batch Results</h3>
+        <button type="button" class="btn btn-outline" id="exportBtn" style="display:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+      <div class="batch-table-scroll">
+        <table class="batch-table" id="batchTable">
+          <thead>
+            <tr>
+              <th>Document ID</th>
+              <th>Client Name</th>
+              <th>Document Type</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Risk Level</th>
+              <th>Status</th>
+              <th>Errors</th>
+            </tr>
+          </thead>
+          <tbody id="batchTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- ==================== End Batch ==================== -->
+
     <!-- Connection Error -->
     <div class="error-message" id="errorMsg">
       <span class="err-icon">&#9888;</span>
