@@ -403,6 +403,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (resp.ok) {
         const data = await resp.json();
+        console.log('n8n response for doc', index, ':', JSON.stringify(data, null, 2));
         return {
           document_id: row.document_id || data.document_id || ('DOC-' + Date.now() + '-' + index),
           client_name: data.client_name || row.client_name || '',
@@ -439,14 +440,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  let batchCancelled = false;
+
   batchSubmitBtn.addEventListener('click', async function () {
     if (!selectedFile) {
       alert('Please select a CSV file first.');
       return;
     }
 
+    // If already running, treat as stop
+    if (batchSubmitBtn.classList.contains('loading')) {
+      batchCancelled = true;
+      batchSubmitBtn.querySelector('.btn-text').textContent = 'Stopping...';
+      batchSubmitBtn.disabled = true;
+      return;
+    }
+
+    batchCancelled = false;
     batchSubmitBtn.classList.add('loading');
-    batchSubmitBtn.disabled = true;
+    batchSubmitBtn.disabled = false; // keep enabled so it can be clicked to stop
+    batchSubmitBtn.querySelector('.btn-text').textContent = 'Stop Batch';
     batchProgress.classList.add('visible');
     batchProgressFill.style.width = '0%';
     batchProgressText.textContent = 'Reading CSV file...';
@@ -470,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       batchProgressText.textContent = 'Processing 0 of ' + rows.length + ' documents...';
       const total = rows.length;
-      const BATCH_SIZE = 4;
+      const BATCH_SIZE = 2;
       const batchStartTime = Date.now();
 
       for (let i = 0; i < total; i += BATCH_SIZE) {
@@ -484,6 +497,11 @@ document.addEventListener('DOMContentLoaded', function () {
         chunkResults.forEach(function (result) {
           batchResults.push(result);
         });
+
+        if (batchCancelled) {
+          batchProgressText.textContent = 'Batch stopped at ' + batchResults.length + ' of ' + total + ' documents.';
+          break;
+        }
 
         // Update progress with ETA
         const processed = Math.min(i + BATCH_SIZE, total);
@@ -500,16 +518,20 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // Done
-      batchProgressText.textContent = 'Processing complete — ' + rows.length + ' documents';
+      if (!batchCancelled) {
+        batchProgressText.textContent = 'Processing complete — ' + batchResults.length + ' documents';
+      }
       renderBatchResults();
       batchSubmitBtn.classList.remove('loading');
       batchSubmitBtn.disabled = false;
+      batchSubmitBtn.querySelector('.btn-text').textContent = 'Process Batch';
     } catch (err) {
       console.error('Batch processing error:', err);
       errorMsg.style.display = 'flex';
       batchProgress.classList.remove('visible');
       batchSubmitBtn.classList.remove('loading');
       batchSubmitBtn.disabled = false;
+      batchSubmitBtn.querySelector('.btn-text').textContent = 'Process Batch';
     }
   });
 
