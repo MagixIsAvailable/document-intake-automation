@@ -33,6 +33,10 @@ An end-to-end automation workflow that ingests client documents via webhook, use
 - 🎛️ **Non-Technical Interface** — Single-page HTML front-end with no frameworks, no build step, no `npm install`
 - 🌐 **Webhook-Driven** — Document submission via REST API; workflow triggers instantly on receipt
 - 🧩 **Modular Validation** — Each rule is an independent function; add new rules without restructuring the pipeline
+- ⚙️ **Configurable Settings Panel** — Gear icon with LM Studio endpoint, webhook URL, and model name saved to localStorage
+- 🆔 **Auto Document ID** — Every submission gets a unique `DOC-timestamp` reference
+- ⏱️ **Processing Time Display** — Shows elapsed time per document
+- 📈 **Parallel Batch Processing** — 4 concurrent requests with live ETA estimation
 - ⚡ **Zero External Dependencies** — No cloud APIs, no Google credentials, no paid services — just n8n, LM Studio, and a browser
 
 ---
@@ -93,25 +97,23 @@ Qwen2.5 Coder 7B Instruct               Qwen2.5 Coder 7B Instruct
 ```
 [CSV File Upload]
     │
-    │ POST to n8n batch webhook (JSON array)
+    │ Frontend parses CSV, sends each row sequentially
+    │ as individual POST requests to the single-doc webhook
     ▼
-[n8n Webhook Trigger — Batch]
+[4 Concurrent Requests (configurable pool)]
+Each row: document_id, client_name, document_text
     │
-    ▼
-[Loop Over Items Node]
-Iterates each row: document_id, client_name, document_text
-    │
-    ▼  (for each row)
+    ▼  (for each row, up to 4 in parallel)
 [Same two-agent pipeline as single document]
 Extraction Agent ∥ Risk Scoring Agent → Merge → Validate → Route
     │
     ▼
-[Aggregate Results]
-Collects all results into a single response array
+[Aggregate Results in Frontend]
+Collects all responses, updates dashboard in real time
     │
     ▼
-[Respond to Webhook]
-Returns JSON array with per-document results to frontend
+[Batch Summary + Exportable Results Table]
+Total, pass, fail, risk distribution + CSV export
 ```
 
 ---
@@ -303,11 +305,10 @@ The role specification called for nine core competencies, all addressed by this 
 - [x] Extracted CSS and JavaScript in separate files
 - [x] Batch CSV processing workflow with dashboard and export
 - [x] GitHub repository with full version history
-- [ ] One-page PDF project summary with workflow diagram and UI screenshots
-- [ ] Obsidian documentation exported as PDF (if required)
+- [x] One-page PDF project summary with workflow diagram and UI screenshots
 
 ---
 
 <p align="center">
-  <sub>Built for Hall Morrice — Digital Transformation Assistant role application</sub>
+  <sub>Built as a technical demonstration for a Digital Transformation / AI Automation role in professional services.</sub>
 </p>
