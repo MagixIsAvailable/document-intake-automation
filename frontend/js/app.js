@@ -176,15 +176,15 @@ document.addEventListener('DOMContentLoaded', function () {
     resultsGrid.appendChild(makeResultItem('Document ID', docId));
 
     // Extraction fields
-    const extracted = data.extracted || data.extraction || data;
+    const extracted = data;
     if (extracted.client_name) {
       resultsGrid.appendChild(makeResultItem('Client Name', extracted.client_name));
     }
     if (extracted.document_type) {
       resultsGrid.appendChild(makeResultItem('Document Type', extracted.document_type));
     }
-    if (extracted.date) {
-      resultsGrid.appendChild(makeResultItem('Date', extracted.date));
+    if (extracted.document_date) {
+      resultsGrid.appendChild(makeResultItem('Date', extracted.document_date));
     }
     if (extracted.amount !== undefined && extracted.amount !== null) {
       resultsGrid.appendChild(makeResultItem('Amount', extracted.amount));
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Status badge
-    const status = (data.validation && data.validation.status) || data.status || 'UNKNOWN';
+    const status = data.validation_status || 'UNKNOWN';
     const statusBadge = document.createElement('div');
     statusBadge.className = 'result-item';
     statusBadge.style.gridColumn = '1 / -1';
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
     resultsGrid.appendChild(statusBadge);
 
     // Risk assessment
-    const risk = data.risk || data.risk_assessment || {};
+    const risk = { risk_level: data.risk_level, risk_reason: data.risk_reason, requires_review: data.requires_review === 'Yes' };
     if (risk.risk_level) {
       const riskDiv = document.createElement('div');
       riskDiv.className = 'risk-highlight';
@@ -225,15 +225,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Validation errors
-    const errors = (data.validation && data.validation.errors) || data.errors || [];
+    const errors = Array.isArray(data.errors) ? data.errors : [];
     if (errors.length > 0) {
       const errSection = document.createElement('div');
       errSection.className = 'errors-section';
       errSection.innerHTML = '<div class="errors-title">Validation Errors</div>' +
         errors.map(function (err) {
-          const field = err.field || '';
-          const reason = err.reason || err.message || err;
-          return '<span class="error-tag">' + (field ? field + ': ' : '') + reason + '</span>';
+          return '<span class="error-tag">' + err + '</span>';
         }).join('');
       resultsGrid.appendChild(errSection);
     }
@@ -405,18 +403,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (resp.ok) {
         const data = await resp.json();
-        const extracted = data.extracted || data.extraction || data;
-        const validation = data.validation || {};
-        const risk = data.risk || data.risk_assessment || {};
         return {
-          document_id: row.document_id || ('DOC-' + Date.now() + '-' + index),
-          client_name: extracted.client_name || row.client_name || '',
-          document_type: extracted.document_type || '',
-          date: extracted.date || '',
-          amount: extracted.amount !== undefined && extracted.amount !== null ? extracted.amount : '',
-          risk_level: risk.risk_level || '',
-          status: validation.status || data.status || 'UNKNOWN',
-          errors: (validation.errors || data.errors || []).map(function (e) { return e.field ? (e.field + ': ' + (e.reason || e.message || '')) : (e.reason || e.message || e); })
+          document_id: row.document_id || data.document_id || ('DOC-' + Date.now() + '-' + index),
+          client_name: data.client_name || row.client_name || '',
+          document_type: data.document_type || '',
+          date: data.document_date || '',
+          amount: data.amount || '',
+          risk_level: data.risk_level || '',
+          status: data.validation_status || 'UNKNOWN',
+          errors: Array.isArray(data.errors) ? data.errors : []
         };
       } else {
         return {
