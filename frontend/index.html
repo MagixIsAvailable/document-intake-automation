@@ -43,6 +43,11 @@
       <input type="text" id="settingsModelName" placeholder="qwen2.5-coder-7b-instruct" />
       <p class="settings-hint">The model identifier passed to the LM Studio API.</p>
     </div>
+    <div class="form-group">
+      <label class="form-label" for="settingsBatchSize">Concurrent Batch Size</label>
+      <input type="number" id="settingsBatchSize" min="1" max="20" placeholder="4" />
+      <p class="settings-hint">Documents processed simultaneously. Recommended: 2–6 for local hardware.</p>
+    </div>
   </div>
   <div class="settings-footer">
     <button class="btn" id="settingsSave">Save Settings</button>
