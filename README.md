@@ -96,6 +96,11 @@ Qwen2.5 Coder 7B Instruct               Qwen2.5 Coder 7B Instruct
               Returns JSON: status, fields, risk, timestamp
 ```
 
+### Workflow Canvas
+
+![n8n workflow canvas](docs/screenshots/workflow-n8n.png)
+*n8n workflow — Webhook fans out to two parallel LM Studio agents (extraction + risk scoring), merges with the original webhook body, processes through the JavaScript validation node, branches on PASS/FAIL, and responds to the frontend.*
+
 ### Batch Architecture
 
 ```
