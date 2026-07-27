@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function () {
     errorMsg.style.display = 'none';
 
     try {
-      const text = await selectedFile.text();
+      const text = await readFileAsText(selectedFile);
       const rows = parseCSV(text);
 
       if (rows.length === 0) {
@@ -643,6 +643,28 @@ document.addEventListener('DOMContentLoaded', function () {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  // Read file with encoding detection — tries UTF-8, falls back to Windows-1252
+  function readFileAsText(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var text = reader.result;
+        // Detect Â£ pattern (Windows-1252 £ read as UTF-8)
+        if (text.indexOf('Â£') !== -1 || text.indexOf('Â') !== -1) {
+          // Re-read as Windows-1252
+          var reader2 = new FileReader();
+          reader2.onload = function () { resolve(reader2.result); };
+          reader2.onerror = reject;
+          reader2.readAsText(file, 'windows-1252');
+        } else {
+          resolve(text);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsText(file, 'UTF-8');
+    });
   }
 
 });
