@@ -471,6 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
       batchProgressText.textContent = 'Processing 0 of ' + rows.length + ' documents...';
       const total = rows.length;
       const BATCH_SIZE = 4;
+      const batchStartTime = Date.now();
 
       for (let i = 0; i < total; i += BATCH_SIZE) {
         const chunk = rows.slice(i, i + BATCH_SIZE);
@@ -484,11 +485,18 @@ document.addEventListener('DOMContentLoaded', function () {
           batchResults.push(result);
         });
 
-        // Update progress
+        // Update progress with ETA
         const processed = Math.min(i + BATCH_SIZE, total);
+        const elapsedMs = Date.now() - batchStartTime;
+        const msPerDoc = elapsedMs / processed;
+        const remaining = total - processed;
+        const etaSeconds = Math.round((msPerDoc * remaining) / 1000);
+        const etaText = etaSeconds > 60
+          ? Math.round(etaSeconds / 60) + 'm ' + (etaSeconds % 60) + 's remaining'
+          : etaSeconds + 's remaining';
         const pct = Math.round((processed / total) * 100);
         batchProgressFill.style.width = pct + '%';
-        batchProgressText.textContent = 'Processing ' + processed + ' of ' + total + ' documents...';
+        batchProgressText.textContent = 'Processing ' + processed + ' of ' + total + ' — ' + etaText;
       }
 
       // Done
