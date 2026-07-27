@@ -388,16 +388,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function processOneDocument(row, index) {
     const webhookUrl = currentSettings.n8nWebhookUrl;
+    console.log('Row data:', row);
+    console.log('Client name:', row.client_name, row['client_name']);
     try {
       const resp = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          document_text: row.document_text || '',
-          client_name: row.client_name || undefined,
-          document_id: row.document_id || ('DOC-' + Date.now() + '-' + index),
-          model_name: currentSettings.modelName,
-          lm_studio_url: currentSettings.lmStudioUrl
+          document_text: row.document_text || row['document_text'],
+          client_name: row.client_name || row['client_name']
         })
       });
 
