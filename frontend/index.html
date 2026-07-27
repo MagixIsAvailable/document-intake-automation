@@ -13,6 +13,42 @@
 
 <div class="bg-gradient"></div>
 
+<!-- Settings Gear Button -->
+<button class="settings-gear" id="settingsGear" title="Settings" aria-label="Open settings">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+</button>
+
+<!-- Settings Overlay -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+
+<!-- Settings Panel -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <h3 class="settings-title">Settings</h3>
+    <button class="settings-close" id="settingsClose" title="Close settings" aria-label="Close settings">&times;</button>
+  </div>
+  <div class="settings-body">
+    <div class="form-group">
+      <label class="form-label" for="settingsLmStudioUrl">LM Studio Endpoint URL</label>
+      <input type="text" id="settingsLmStudioUrl" placeholder="http://127.0.0.1:1234/v1/chat/completions" />
+      <p class="settings-hint">The REST API endpoint for your local LM Studio instance.</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="settingsN8nUrl">n8n Webhook URL</label>
+      <input type="text" id="settingsN8nUrl" placeholder="http://localhost:5678/webhook/document-intake" />
+      <p class="settings-hint">The webhook URL that triggers the n8n document intake workflow.</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="settingsModelName">Model Name</label>
+      <input type="text" id="settingsModelName" placeholder="qwen2.5-coder-7b-instruct" />
+      <p class="settings-hint">The model identifier passed to the LM Studio API.</p>
+    </div>
+  </div>
+  <div class="settings-footer">
+    <button class="btn" id="settingsSave">Save Settings</button>
+  </div>
+</div>
+
 <div class="app-layout">
 
   <!-- Sidebar / Workflow Timeline -->
@@ -211,6 +247,7 @@
         <div class="results-heading">
           &#9776; Processing Results
         </div>
+        <p class="processing-time" id="processingTime"></p>
         <div class="results-grid" id="resultsGrid">
           <!-- Dynamically filled -->
         </div>
