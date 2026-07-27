@@ -1041,6 +1041,22 @@ textarea::placeholder, input::placeholder {
   font-weight: 500;
 }
 
+/* ==================== Batch Stop Button State ==================== */
+
+#batchSubmitBtn.loading {
+  background: var(--accent);
+  cursor: pointer;
+}
+
+#batchSubmitBtn.loading:hover {
+  background: var(--danger);
+  box-shadow: 0 4px 24px var(--danger-glow);
+}
+
+#batchSubmitBtn.loading:hover .btn-text::before {
+  content: '\23F9  ';
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .app-layout { flex-direction: column; }

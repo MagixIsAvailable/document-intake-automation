@@ -460,6 +460,22 @@ document.addEventListener('DOMContentLoaded', function () {
     batchSubmitBtn.classList.add('loading');
     batchSubmitBtn.disabled = false; // keep enabled so it can be clicked to stop
     batchSubmitBtn.querySelector('.btn-text').textContent = 'Stop Batch';
+
+    // Swap to stop icon + red on hover while loading
+    batchSubmitBtn.addEventListener('mouseenter', function () {
+      if (batchSubmitBtn.classList.contains('loading')) {
+        batchSubmitBtn.querySelector('.btn-text').textContent = '\u23F9 Stop Batch';
+        batchSubmitBtn.style.background = 'var(--danger)';
+      }
+    });
+
+    batchSubmitBtn.addEventListener('mouseleave', function () {
+      if (batchSubmitBtn.classList.contains('loading') && !batchCancelled) {
+        batchSubmitBtn.querySelector('.btn-text').textContent = 'Processing...';
+        batchSubmitBtn.style.background = '';
+      }
+    });
+
     batchProgress.classList.add('visible');
     batchProgressFill.style.width = '0%';
     batchProgressText.textContent = 'Reading CSV file...';
