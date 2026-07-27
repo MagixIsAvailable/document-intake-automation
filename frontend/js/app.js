@@ -390,6 +390,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const webhookUrl = currentSettings.n8nWebhookUrl;
     console.log('Row data:', row);
     console.log('Client name:', row.client_name, row['client_name']);
+    console.log('Sending client_name:', row.client_name, '| Keys:', Object.keys(row));
     try {
       const resp = await fetch(webhookUrl, {
         method: 'POST',
