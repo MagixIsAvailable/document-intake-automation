@@ -115,7 +115,10 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       const resp = await fetch(currentSettings.n8nWebhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'dia-secret-2026'
+        },
         body: JSON.stringify({
           document_text: documentText,
           client_name:   clientName || undefined,
@@ -328,7 +331,10 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       const resp = await fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'dia-secret-2026'
+        },
         body: JSON.stringify({
           document_text: row.document_text || row['document_text'],
           client_name:   row.client_name   || row['client_name']
