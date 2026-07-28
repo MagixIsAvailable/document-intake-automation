@@ -422,7 +422,7 @@ Risk is rule-based in the n8n Code node — not determined by the AI. This elimi
 
 ## 📋 Project Context
 
-Built as a technical demonstration for the **Digital Transformation Assistant** role at **Hall Morrice**, a UK-based audit and advisory firm.
+Built as a technical demonstration of intelligent workflow automation, agentic AI pipelines, and GDPR-compliant document processing for professional services environments.
 
 | # | Requirement | How This Project Delivers |
 |---|-------------|---------------------------|
