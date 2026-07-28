@@ -613,6 +613,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  // ==================== AUDIT QUERY ====================
+  const auditQueryBtn = document.getElementById('auditQueryBtn');
+  const auditQueryInput = document.getElementById('auditQuery');
+  const auditAnswer = document.getElementById('auditAnswer');
+
+  auditQueryBtn.addEventListener('click', async function () {
+    const query = auditQueryInput.value.trim();
+    if (!query) return;
+
+    auditQueryBtn.classList.add('loading');
+    auditQueryBtn.disabled = true;
+    auditAnswer.classList.remove('visible');
+    auditAnswer.textContent = '';
+
+    try {
+      const resp = await fetch(
+        currentSettings.n8nWebhookUrl.replace('document-intake', 'audit-query'),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': 'dia-secret-2026'
+          },
+          body: JSON.stringify({ query: query })
+        }
+      );
+
+      if (!resp.ok) throw new Error('Query failed');
+      const data = await resp.json();
+      auditAnswer.textContent = data.answer || 'No answer returned.';
+      auditAnswer.classList.add('visible');
+    } catch (err) {
+      auditAnswer.textContent = 'Query failed — check n8n audit-query workflow is active.';
+      auditAnswer.classList.add('visible');
+    } finally {
+      auditQueryBtn.classList.remove('loading');
+      auditQueryBtn.disabled = false;
+    }
+  });
+
   // CSV Export
   exportBtn.addEventListener('click', function () {
     if (batchResults.length === 0) return;

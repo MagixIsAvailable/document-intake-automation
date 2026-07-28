@@ -1070,6 +1070,23 @@ textarea::placeholder, input::placeholder {
   color: var(--danger);
 }
 
+/* ==================== Audit Query ==================== */
+
+.audit-answer {
+  display: none;
+  margin-top: 20px;
+  padding: 16px 18px;
+  background: rgba(59, 130, 246, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.audit-answer.visible {
+  display: block;
+}
+
 /* ==================== Batch Stop Button State ==================== */
 
 #batchSubmitBtn.loading {
