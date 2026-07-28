@@ -501,6 +501,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
     batchTableWrapper.classList.add('visible');
     exportBtn.style.display = 'inline-flex';
+
+    // Trigger anomaly detection after results render
+    runAnomalyDetection(batchResults);
+  }
+
+  async function runAnomalyDetection(results) {
+    if (results.length === 0) return;
+
+    const anomalySection = document.getElementById('anomalySection');
+    const anomalyContent = document.getElementById('anomalyContent');
+    anomalySection.classList.add('visible');
+    anomalyContent.innerHTML = '<p class="anomaly-loading">Analysing batch for patterns...</p>';
+
+    const docSummary = results.map(function (r) {
+      return 'ID: ' + r.document_id + ' | Client: ' + r.client_name + ' | Type: ' + r.document_type + ' | Amount: ' + r.amount + ' | Risk: ' + r.risk_level + ' | Status: ' + r.status;
+    }).join('\n');
+
+    try {
+      const resp = await fetch(currentSettings.lmStudioUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: currentSettings.modelName,
+          temperature: 0.2,
+          max_tokens: 600,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a financial fraud analyst. Analyse document batches for suspicious patterns. Be concise and specific. Output plain text, no markdown.'
+            },
+            {
+              role: 'user',
+              content: 'Analyse this batch of ' + results.length + ' documents for suspicious patterns, anomalies, repeated vendors, coordinated timing, or signs of organised fraud. Flag anything that warrants investigation.\n\nDocuments:\n' + docSummary + '\n\nProvide a brief analyst summary (3-5 sentences max).'
+            }
+          ]
+        })
+      });
+
+      const data = await resp.json();
+      const analysis = data.choices?.[0]?.message?.content || 'No analysis returned.';
+      anomalyContent.innerHTML = '<p class="anomaly-text">' + analysis + '</p>';
+    } catch (err) {
+      anomalyContent.innerHTML = '<p class="anomaly-error">Anomaly detection failed — LM Studio may be unavailable.</p>';
+    }
   }
 
   // CSV Export
