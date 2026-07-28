@@ -570,6 +570,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Trigger anomaly detection after results render
     runAnomalyDetection(batchResults);
+    generateBatchReport(batchResults);
   }
 
   async function runAnomalyDetection(results) {
@@ -610,6 +611,84 @@ document.addEventListener('DOMContentLoaded', function () {
       anomalyContent.innerHTML = '<p class="anomaly-text">' + analysis + '</p>';
     } catch (err) {
       anomalyContent.innerHTML = '<p class="anomaly-error">Anomaly detection failed — LM Studio may be unavailable.</p>';
+    }
+  }
+
+  async function generateBatchReport(results) {
+    if (results.length === 0) return;
+
+    const reportSection = document.getElementById('reportSection');
+    const reportContent = document.getElementById('reportContent');
+    reportSection.classList.add('visible');
+    reportContent.innerHTML = '<p class="anomaly-loading">Generating audit summary report...</p>';
+
+    var total  = results.length;
+    var pass   = results.filter(function (r) { return r.status === 'PASS'; }).length;
+    var fail   = results.filter(function (r) { return r.status !== 'PASS'; }).length;
+    var high   = results.filter(function (r) { return (r.risk_level || '').toLowerCase() === 'high'; }).length;
+    var medium = results.filter(function (r) { return (r.risk_level || '').toLowerCase() === 'medium'; }).length;
+    var low    = results.filter(function (r) { return (r.risk_level || '').toLowerCase() === 'low'; }).length;
+
+    var docSummary = results.map(function (r) {
+      return r.document_id + ' | ' + r.client_name + ' | ' + r.document_type + ' | ' + r.amount + ' | ' + r.risk_level + ' | ' + r.status;
+    }).join('\n');
+
+    try {
+      var resp = await fetch(currentSettings.lmStudioUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: currentSettings.modelName,
+          temperature: 0.2,
+          max_tokens: 600,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a senior audit analyst writing executive summary reports. Be professional, concise, and specific. Plain text only, no markdown.'
+            },
+            {
+              role: 'user',
+              content: 'Write a one-paragraph executive audit summary for this batch of ' + total + ' documents.\n\nStats: ' + pass + ' PASS, ' + fail + ' FAIL, ' + high + ' HIGH risk, ' + medium + ' MEDIUM risk, ' + low + ' LOW risk.\n\nDocuments:\n' + docSummary + '\n\nInclude: overall assessment, key risk findings, specific clients of concern, and recommended next actions.'
+            }
+          ]
+        })
+      });
+
+      var data = await resp.json();
+      var summary = data.choices?.[0]?.message?.content || 'Report generation failed.';
+
+      reportContent.innerHTML =
+        '<div class="report-stats">' +
+          '<span class="report-stat">\uD83D\uDCC4 ' + total + ' documents</span>' +
+          '<span class="report-stat pass">\u2713 ' + pass + ' PASS</span>' +
+          '<span class="report-stat fail">\u2717 ' + fail + ' FAIL</span>' +
+          '<span class="report-stat high">\uD83D\uDD34 ' + high + ' HIGH</span>' +
+          '<span class="report-stat medium">\uD83D\uDFE1 ' + medium + ' MEDIUM</span>' +
+          '<span class="report-stat low">\uD83D\uDFE2 ' + low + ' LOW</span>' +
+        '</div>' +
+        '<p class="report-text">' + summary + '</p>';
+
+      // Log to n8n → Google Sheets Reports tab
+      await fetch(currentSettings.n8nWebhookUrl.replace('document-intake', 'log-report'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'dia-secret-2026'
+        },
+        body: JSON.stringify({
+          timestamp:    new Date().toISOString(),
+          batch_size:   total,
+          pass_count:   pass,
+          fail_count:   fail,
+          high_count:   high,
+          medium_count: medium,
+          low_count:    low,
+          summary:      summary
+        })
+      });
+
+    } catch (err) {
+      reportContent.innerHTML = '<p class="anomaly-error">Report generation failed — LM Studio may be unavailable.</p>';
     }
   }
 

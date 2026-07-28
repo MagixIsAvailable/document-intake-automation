@@ -1070,6 +1070,35 @@ textarea::placeholder, input::placeholder {
   color: var(--danger);
 }
 
+/* ==================== Executive Audit Report ==================== */
+
+.report-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.report-stat {
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(59,130,246,0.08);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.report-stat.pass   { background: rgba(16,185,129,0.08); color: var(--success); border-color: rgba(16,185,129,0.2); }
+.report-stat.fail   { background: rgba(239,68,68,0.08);  color: var(--danger);  border-color: rgba(239,68,68,0.2); }
+.report-stat.high   { background: rgba(239,68,68,0.08);  color: var(--danger);  border-color: rgba(239,68,68,0.2); }
+.report-stat.medium { background: rgba(245,158,11,0.08); color: var(--warning); border-color: rgba(245,158,11,0.2); }
+.report-stat.low    { background: rgba(16,185,129,0.08); color: var(--success); border-color: rgba(16,185,129,0.2); }
+.report-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-top: 8px;
+}
+
 /* ==================== Audit Query ==================== */
 
 .audit-answer {
