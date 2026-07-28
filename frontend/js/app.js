@@ -94,6 +94,58 @@ document.addEventListener('DOMContentLoaded', function () {
   const clientInput   = document.getElementById('clientName');
 
   // ==================== SINGLE DOCUMENT SUBMIT ====================
+
+  async function checkDocumentSimilarity(documentText) {
+    try {
+      const historyResp = await fetch(
+        currentSettings.n8nWebhookUrl.replace('document-intake', 'audit-history'),
+        {
+          method: 'GET',
+          headers: { 'x-api-key': 'dia-secret-2026' }
+        }
+      );
+
+      if (!historyResp.ok) return null;
+      const history = await historyResp.json();
+
+      if (!history.high_risk_history || history.high_risk_history.length === 0) {
+        return null;
+      }
+
+      const historyText = history.high_risk_history
+        .map(function (h) { return 'Client: ' + h.client_name + ' | Type: ' + h.document_type + ' | Amount: ' + h.amount + ' | Summary: ' + h.summary; })
+        .join('\n');
+
+      const resp = await fetch(currentSettings.lmStudioUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: currentSettings.modelName,
+          temperature: 0.1,
+          max_tokens: 200,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a fraud pattern analyser. Output only raw JSON. No markdown. Start with { end with }.'
+            },
+            {
+              role: 'user',
+              content: 'Does this new document resemble any known HIGH risk fraud patterns from history?\n\nNew document:\n' + documentText + '\n\nKnown HIGH risk patterns:\n' + historyText + '\n\nReturn only: {"similar": true/false, "similarity_score": 0-10, "reason": "brief explanation"}'
+            }
+          ]
+        })
+      });
+
+      const data = await resp.json();
+      const content = data.choices?.[0]?.message?.content || '{}';
+      const match = content.match(/\{[\s\S]*\}/);
+      return match ? JSON.parse(match[0]) : null;
+    } catch (e) {
+      console.error('Similarity check failed:', e);
+      return null;
+    }
+  }
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     errorMsg.style.display = 'none';
@@ -111,6 +163,17 @@ document.addEventListener('DOMContentLoaded', function () {
     submitBtn.classList.add('loading');
     submitBtn.disabled = true;
     setTimelineStep('extract');
+
+    // Check similarity against known fraud patterns
+    const similarityResult = await checkDocumentSimilarity(documentText);
+    if (similarityResult && similarityResult.similar && similarityResult.similarity_score >= 6) {
+      const warningDiv = document.getElementById('similarityWarning');
+      const warningText = document.getElementById('similarityText');
+      if (warningDiv && warningText) {
+        warningText.textContent = '\u26A0 Similar to known fraud pattern (score: ' + similarityResult.similarity_score + '/10) — ' + similarityResult.reason;
+        warningDiv.style.display = 'flex';
+      }
+    }
 
     try {
       const resp = await fetch(currentSettings.n8nWebhookUrl, {
@@ -337,7 +400,10 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         body: JSON.stringify({
           document_text: row.document_text || row['document_text'],
-          client_name:   row.client_name   || row['client_name']
+          client_name:   row.client_name   || row['client_name'],
+          document_id:   row.document_id   || '',
+          model_name:    currentSettings.modelName,
+          lm_studio_url: currentSettings.lmStudioUrl
         })
       });
 
