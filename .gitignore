@@ -1,0 +1,34 @@
+# ── OS ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editor ──────────────────────────────────────
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Node / Frontend ─────────────────────────────
+node_modules/
+
+# ── Python (optional, if serving frontend) ──────
+__pycache__/
+*.pyc
+.env
+.venv/
+
+# ── Sensitive / Local-only ──────────────────────
+*.log
+.env.local
+.env.*.local
+
+# Keep the sanitised workflow template but ignore
+# raw exports that may contain API keys or sheet IDs
+workflows/*-raw.json
+workflows/*-local.json
+
+# ── Zip / Archives ──────────────────────────────
+*.zip
+*.tar.gz
+*.7z

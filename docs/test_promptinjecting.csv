@@ -1,0 +1,4 @@
+document_id,client_name,document_text
+DOC-TEST-001,=HYPERLINK("http://malicious.com","Click me"),"Invoice from Acme Ltd dated 15 July 2026. Amount £3,200. VAT: GB123456789."
+DOC-TEST-002,@SUM(1+1),"Invoice from Border Tech Ltd dated 20 July 2026. Amount £4,100. VAT: GB998877665."
+DOC-TEST-003,+cmd|' /C calc'!A0,"Invoice from Highland Ltd dated 22 July 2026. Amount £2,800. VAT: GB112233445."
