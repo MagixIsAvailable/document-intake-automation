@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="https://img.shields.io/badge/Built%20With-n8n-18b52d?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n">
   <img src="https://img.shields.io/badge/LM%20Studio-3b82f6?style=for-the-badge&logo=lmstudio&logoColor=white" alt="LM Studio">
   <img src="https://img.shields.io/badge/Model-Qwen2.5%20Coder%207B-8b5cf6?style=for-the-badge" alt="Qwen2.5 Coder 7B">
