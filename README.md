@@ -489,8 +489,6 @@ Built as a technical demonstration of intelligent workflow automation, agentic A
 - [x] Security testing — documented vulnerabilities, mitigations, and resisted attack vectors
 - [x] CSV formula injection protection (`csvEscape()` apostrophe prepend)
 - [x] GitHub repository with full version history
-- [ ] Screenshots in `docs/screenshots/` — add after final UI pass
-- [ ] One-page PDF project summary with workflow diagram
 
 ---
 
