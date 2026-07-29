@@ -181,7 +181,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const token = $input.first().json.headers['x-api-key'];\nconst validToken = 'dia-secret-2026';\n\nif (!token || token !== validToken) {\n  throw new Error('Unauthorised: invalid or missing x-api-key header');\n}\n\nreturn $input.all();"
+        "jsCode": "const token = $input.first().json.headers['x-api-key'];\nconst validToken = '';\n\nif (!token || token !== validToken) {\n  throw new Error('Unauthorised: invalid or missing x-api-key header');\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -223,7 +223,7 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "189AQIQTxI9qTvzCoN33RQQTWZU11BHpnIgW2tgwEprI",
+          "value": "",
           "mode": "list",
           "cachedResultName": "DIA Audit Log",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/189AQIQTxI9qTvzCoN33RQQTWZU11BHpnIgW2tgwEprI/edit?usp=drivesdk"
@@ -365,7 +365,7 @@
       "name": "audit log",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "3Miqg19DyyjbljDk",
+          "id": "",
           "name": "Google Sheets account 2"
         }
       }
@@ -525,7 +525,7 @@
       "name": "Google Sheets (Flagged)",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "3Miqg19DyyjbljDk",
+          "id": "",
           "name": "Google Sheets account 2"
         }
       }
@@ -576,7 +576,7 @@
       "name": "Get row(s) in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "3Miqg19DyyjbljDk",
+          "id": "",
           "name": "Google Sheets account 2"
         }
       }
@@ -652,7 +652,7 @@
       "name": "Get row(s) in sheet1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "3Miqg19DyyjbljDk",
+          "id": ",
           "name": "Google Sheets account 2"
         }
       }
@@ -854,7 +854,7 @@
       "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "3Miqg19DyyjbljDk",
+          "id": ",
           "name": "Google Sheets account 2"
         }
       }
